@@ -3,10 +3,11 @@
 # include"Place.h"
 # include"Chess.h"
 # include"Node.h"
+# include"Stack.h"
 
 Place::Place()
 {
-    color = red;
+    color = RED;
     cheStack = new Stack<Chess>;
 }
 
@@ -30,10 +31,10 @@ void Place::outInfo()
 {
     switch (color)
     {
-        case red:       std::cout << "   Red ";   break;
-        case green:     std::cout << " Green "; break;
-        case blue:      std::cout << "  Blue ";  break;
-        case yellow:    std::cout << "Yellow "; break;
+        case RED:       std::cout << "   Red ";   break;
+        case GREEN:     std::cout << " Green "; break;
+        case BLUE:      std::cout << "  Blue ";  break;
+        case YELLOW:    std::cout << "Yellow "; break;
         default :       std::cout << "None ";
     }
 }

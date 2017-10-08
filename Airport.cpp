@@ -2,11 +2,11 @@
 # include"Airport.h"
 # include"Stack.h"
 # include"Node.h"
-# include"Chess.h"
 # include"something.h"
+# include"Chess.h"
 # include"Place.h"
 
-Airport::Airport(Color col = red)
+Airport::Airport(Color col = RED)
 {
 	color = col;
 	int i;
@@ -18,12 +18,15 @@ Airport::Airport(Color col = red)
 	{
 		Chess *nChess = new Chess(col, i);
 		chess[i] = nChess;
+		nChess->airport = this;
+		nChess->position = NULL;
+		nChess->planeMap = &(this->planeMap);
 		Port->Push(nChess);
 		//printf("[+]\t\t plane<%d>.%d ready\n", color, i);
 	}
 	//printf("[+]\t all plane<%d> ready\n", color);
-	Place *p = new Place(color);
-	start = new Node<Place>(p);
+	//Place *p = new Place(color);
+	//start = new Node<Place>(p);
 	//printf("[+]\t road is ready\n");
 	//printf("[+] Airport %d ready\n", color);
 }
@@ -43,6 +46,15 @@ Color Airport::getEffect()
 	return getColor();
 }
 
+int Airport::isWin()
+{
+    if (End->length() >= 4)
+    {
+        return 1;
+    }
+    return 0;
+}
+
 Chess *Airport::getChess(int index = 0)
 {
 	return chess[index];
@@ -50,11 +62,11 @@ Chess *Airport::getChess(int index = 0)
 
 void Airport::planeStandBy(int num = 1)
 {
-	start->Date->cheStack->Push(Port->Pop(num));
-	Node<Chess> *p = start->Date->cheStack->Head->next;
-	while (p != NULL)
+	Node<Chess> *p = Port->Head->next;
+	while (p != NULL&& num--)
 	{
-		p->Date->onFlying(this);
+	    printf("[+]\t");
+		p->Value->takeOff();
 		p = p->next;
 	}
 }

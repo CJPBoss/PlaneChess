@@ -23,7 +23,7 @@ template<typename T>
 class Node
 {
 public :
-	T *Date;
+	T *Value;
 	Node<T> *next;	//common next Node, on line
 	Node<T> *prev;	//common prev Node, on line
 	Node<T> *brch;	//To the branch of flight(if T is Place)
@@ -32,28 +32,28 @@ public :
 	{
 	    next = NULL;
 	    prev = NULL;
-	    Date = NULL;
+	    Value = NULL;
 	    brch = NULL;
     }
-	Node<T>(T *date)
+	Node<T>(T *val)
 	{
 	    next = NULL;
 	    prev = NULL;
-	    Date = date;
+	    Value = val;
 	    brch = NULL;
     }
-	Node<T>(T date)
+	Node<T>(T val)
 	{
 	    next = NULL;
 	    prev = NULL;
-	    Date = &date;
+	    Value = &val;
 	    brch = NULL;
     }
-	Node<T>(T &date)
+	Node<T>(T &val)
 	{
 	    next = NULL;
 	    prev = NULL;
-	    Date = &date;
+	    Value = &val;
 	    brch = NULL;
     }
 
@@ -73,12 +73,16 @@ public :
         {
             return prev;
         }
-        else if (brch != NULL&& effect->getEffect() == Date->getEffect())
+        else if (brch != NULL&& effect->getEffect() == Value->getEffect())
         {
             return brch;
         }
         else
         {
+            if (next->Value->cheStack->length() > 1)
+            {
+                effect->direction = 0;
+            }
             return next;
         }
     }
@@ -88,10 +92,5 @@ public :
 		return prev;
 	}
 };
-
-class Chess;
-class Place;
-template class Node<Chess>;
-template class Node<Place>;
 
 # endif

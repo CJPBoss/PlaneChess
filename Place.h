@@ -1,11 +1,15 @@
 # ifndef _PLACE_H_
 # define _PLACE_H_
 
-# include"Node.h"
-# include"Stack.h"
-# include"Chess.h"
-# include"something.h"
-# include"string"
+typedef int Color;
+
+class Chess;
+
+template<typename T>
+class Stack;
+template<typename T>
+class Node;
+
 
 class Chess;
 class Place

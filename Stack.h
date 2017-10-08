@@ -13,46 +13,11 @@ public :
         Head = new Node<T>(n);
     }
 
-    Node<T> *Pop(T *t)
-    {
-        Node<T> *p = Head->next;
-        Node<T> *q = Head;
-        while (p != NULL)
-        {
-            if (p->Date == t)
-            {
-                q->next = p->next;
-                if (p->next != NULL)
-                {
-                    p->next->prev = q;
-                }
-                return p;
-            }
-            q = p;
-            p = p->next;
-        }
-    }
+    Node<T> *Pop(T *);
 
-    Node<T> *Pop(int cnt = 1)
-    {
-        Node<T> *c = Head->next;//return these from c to cnt
-        Node<T> *q = Head->next;
-        Node<T> *p = Head;
-        Head->next = Head->next->next;
-        while (cnt != 0&& q != NULL)
-        {
-            p = q;
-            q = q->next;
-            cnt--;
-        }
-        p->next = NULL;//list end -> next is NULL
-        if (q != NULL)// stack -> prev is NULL
-        {
-            q->prev = NULL;
-        }
-        Head->next = q;// stack's Head -> next is q
-        return c;
-    }
+    Node<T> *Pop(int cnt = 1);
+
+    int length();
 
     void earse()
     {
@@ -60,13 +25,13 @@ public :
         Node<T> *q = p->next;
         while (q != NULL)
         {
-            delete p;
-            p = q;
+            q->Value->beKilled();
             q = q->next;
         }
-        delete p;
+        //p->Value->beKilled();
         Head->next = NULL;
     }
+
     Node<T> *getTop()
     {
         return Head->next;
@@ -122,6 +87,86 @@ public :
         Head->next = p;
         p->prev = NULL;
     }
+//
+    int has(Node<T> *p)
+    {
+        return has(p->Value);
+    }
+
+    int has(T &p)
+    {
+        return has(&p);
+    }
+
+    int has(T *p)
+    {
+        Node<T> *q = Head->next;
+        while (q != NULL)
+        {
+            if (q->Value == p)
+            {
+                return 1;
+            }
+            q = q->next;
+        }
+        return 0;
+    }
 };
 
+template<typename T>
+Node<T> *Stack<T>::Pop(T *t)
+{
+    Node<T> *p = Head->next;
+    Node<T> *q = Head;
+    while (p != NULL)
+    {
+        if (p->Value == t)
+        {
+            q->next = p->next;
+            if (p->next != NULL)
+            {
+                p->next->prev = q;
+            }
+            return p;
+        }
+        q = p;
+        p = p->next;
+    }
+    return NULL;
+}
+
+template<typename T>
+Node<T> *Stack<T>::Pop(int cnt)
+{
+    Node<T> *c = Head->next;//return these from c to cnt
+    Node<T> *q = Head->next;
+    Node<T> *p = Head;
+    Head->next = Head->next->next;
+    while (cnt != 0&& q != NULL)
+    {
+        p = q;
+        q = q->next;
+        cnt--;
+    }
+    p->next = NULL;//list end -> next is NULL
+    if (q != NULL)// stack -> prev is NULL
+    {
+        q->prev = NULL;
+    }
+    Head->next = q;// stack's Head -> next is q
+    return c;
+}
+
+template<typename T>
+int Stack<T>::length()
+{
+    int len = 0;
+    Node<T> *p = Head->next;
+    while (p != NULL)
+    {
+        len++;
+        p = p->next;
+    }
+    return len;
+}
 # endif // _STACK_H_

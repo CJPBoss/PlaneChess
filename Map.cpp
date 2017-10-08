@@ -6,8 +6,6 @@
 # include"Chess.h"
 # include"something.h"
 
-class Place;
-
 Node<Place> *Map::operator[](int position)
 {
 	int len = length();
@@ -22,10 +20,14 @@ Node<Place> *Map::operator[](int position)
 
 void Map::outInfo(Node<Place> *p)
 {
+    if (p == NULL)
+    {
+        return ;
+    }
     int id = findIndex(p);
-    printf("\t [");
-    p->Date->outInfo();
-    printf("] [%d].[%d]", id%100, id/100);
+    printf(" [Place_(");
+    p->Value->outInfo();
+    printf(")-<%2d|%d>]", id%100, id/100);
 }
 
 int Map::findIndex(Node<Place> *p)
@@ -47,7 +49,7 @@ int Map::findIndex(Node<Place> *p)
         {
             return index;
         }
-        if (isEndLine(q) == 1)
+        if (isEndStartPoint(q) == 1)
         {
             int a = 1;
             Node<Place> *r = q->brch;
@@ -93,16 +95,29 @@ void i2s(int num)
 
 Map::Map()
 {
-	Color w = red;
+	Color w = RED;
 	printf("[+] plane map is setting\n");
 	for (int i = 0; i < 4; i++)
 	{
-		Place *p = new Place(i2c(w + i));
-		Port[i] = new Node<Place>(p);
+		Place *p = new Place(i);
+		Start[i] = new Node<Place>(p);
 	}
 	Head = NULL;
 	Init();
 	printf("[+] plane map is ready\n");
+}
+
+int Map::isEnd(Node<Place> *p)
+{
+    int i;
+    for (i = 0; i < 4; i++)
+    {
+        if (p == End[i])
+        {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 int Map::isDanger(Node<Place> *p)
@@ -121,7 +136,7 @@ int Map::isDanger(Node<Place> *p)
 void Map::createEnd(Node<Place> *sta)
 {
     Node<Place> *p = sta;
-    Color col = sta->Date->getColor();
+    Color col = sta->Value->getColor();
 
     Place *nPlace = new Place(col);
     Node<Place> *nNode = new Node<Place>(nPlace);
@@ -142,16 +157,27 @@ void Map::createEnd(Node<Place> *sta)
             DangerEnd[col] = nNode;
         }
     }
+    End[col] = p;
+}
+
+int Map::isEndStartPoint(Node<Place> *p)
+{
+    for (int i = 0; i < 4; i++)
+    {
+        if (p == EndStartPoint[i])
+        {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 int Map::isEndLine(Node<Place> *p)
 {
-    for (int i = 0; i < 4; i++)
+    int id = findIndex(p);
+    if (id / 100 > 0)
     {
-        if (p == EndLine[i])
-        {
-            return 1;
-        }
+        return 1;
     }
     return 0;
 }
@@ -161,26 +187,34 @@ void Map::Init()
 {
 	Head = new Node<Place>;
 	Node<Place> *p = Head;
-	int staColor = red;
+	int staColor = RED;
 	int i, j, k = 3;
 	for (i = 0; i < 4; i++)
 	{
 		for (j = 0; j < 13; j++)
 		{
-			Place *nPlace = new Place(i2c(staColor + k));
+			Place *nPlace = new Place(right_4(staColor + k));
 			k++;
 			Node<Place> *nNode = new Node<Place>(nPlace);
 			if (j == 0)
 			{
-				Port[i]->next = nNode;
+				Start[i]->next = nNode;
 			}
+            if (j == 3)                                         //i is color, end of super fly of color + 2
+            {
+                SuperFly[right_4(i + 2)][1] = nNode;
+            }
+			if (j == 4)                                         //i is color, start of super fly of color + 3
+            {
+                SuperFly[right_4(i + 3)][0] = nNode;
+            }
 			p->next = nNode;
 			nNode->prev = p;
 			p = nNode;
 			if (j == 10)
             {
                 createEnd(p);
-                EndLine[i] = p;
+                EndStartPoint[i] = p;
             }
 		}
 	}
@@ -192,11 +226,10 @@ int Map::iStart(Node<Place> *p)
 {
 	for (int i = 0; i < 4; i++)
 	{
-		if (Port[i]->next == p)
+		if (Start[i] == p)
 		{
-		    //i2s(i);
-			return i;
+			return 1;
 		}
 	}
-	return 4;
+	return 0;
 }
